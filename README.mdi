@@ -6,17 +6,34 @@ Start by Forking this repo.
 
 1. In at least two sentences, how would you define what seed data is and why it's useful? (1 point possible)
 
+Seed data is information that a programmer inputs into their database through Entity Framework. It's useful because it allows the programmer to test the functionality of their database.
+
 1. Deleting a database column is a dangerous action, what might happen if you delete a column you didn't mean to? (1 point possible)
+
+If you delete a column that wasn't supposed to be deleted, it could cause some problems withing the database. Such as, a loss of necessary data. Or, more importantly, a different table in the database might rely on the deleted column to function properly.
 
 1. Write out at least 3 steps to describe the process of adding a new column to your database using entity framework. (1 point possible)
 
+1. Go into the class that made the table you want to add to
+2. Add a new property to that class with the same name you want the column to be
+3. Save it, add a migration, then update the database
+
 1. When I run `Update-Database`, which function in the migration is used `Up` or `Down`? (1 point possible)
+
+The 'Up' function is used when running a migrarion with 'Update-Database'. The 'Down' function is used when reverting a migration.
 
 1. When was Entity Framework Core version 7.0 released? As always, feel free to use google as a resource in answering this question. (1 point possible)
 
+Entity Framework Core version 7.0 was released in November 2022.
+
 1. True or False: When using Entity Framework to create database tables for a many-to-many relationship, you must create a class to represent the join table? Explain your answer. (1 point possible)
 
+This is false. You are able to create a class for a join table and specify the attributes, but it is not necessary. If you attempt to create a many-to-many relationship without a class for the join table, a join table will automaticaly be made for you if the attributes in both classes 
+are set up to represent a many-to-many relationship.
+
 1. Replace the ____________s with the code required to create the models required for the following entity relationship diagram. Don't worry about `Routeid` vs `RoutesId` and `Stopid` vs `StopsId`, either is fine. Also, no need to include the `terminus` column. (2 points possible)
+
+
 
 <img width="600" alt="Stop and Route ERD" src="https://user-images.githubusercontent.com/11747682/228308854-d2328b8c-32d2-4eb9-aa0d-8a2b3d4c6bfa.png">
 
@@ -25,7 +42,9 @@ namespace BusTransitApp
     {
         public class Route
         {
-            _____________________
+            public int Id { get; set; }
+            public float Fare { get; set; }
+            public List<Stop> Stop { get; set; } = new();
         }
     }
 
@@ -33,7 +52,9 @@ namespace BusTransitApp
     {
         public class Stop
         {
-            _______________________
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public List<Route> Route { get; set; } = new();
         }
     }
 ```
@@ -48,9 +69,20 @@ namespace BusTransitApp.Data
     {
         public static void SeedRoutesAndStops(BusTransitContext context)
         {
-            if (______________)
+            if (!context.Route.Any())
             {
-                ______________________________
+                var street1 = new Stop {Name = "Street 1"}
+                
+                var route = new List<Route>
+                {
+                    new Route
+                    {
+                        Fare = 4.99
+                        Stop = new List<Stop> {street1}
+                    }
+                };
+                context.Route.AddRange(route)
+                context.SaveChanges();
             }
         }
     }
